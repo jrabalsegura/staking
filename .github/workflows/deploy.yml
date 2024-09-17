@@ -42,12 +42,41 @@ jobs:
         USER: ubuntu
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: stakes-app
+        IMAGE_TAG: ${{ github.sha }}
+        DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
       run: |
         echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-        ssh -v -o StrictHostKeyChecking=no -i private_key ${USER}@${HOST} '
-          aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $ECR_REGISTRY
-          docker pull $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}
+        ssh -o StrictHostKeyChecking=no -i private_key ${USER}@${HOST} << EOF
+          # Install AWS CLI if not already installed
+          if ! command -v aws &> /dev/null; then
+            sudo apt-get update && sudo apt-get install -y awscli
+          fi
+          
+          # Configure AWS CLI
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws configure set default.region eu-west-1
+
+          # Login to ECR
+          aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin ${ECR_REGISTRY}
+
+          # Pull the image
+          docker pull ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}
+
+          # Stop and remove existing container
           docker stop stakes-app-container || true
           docker rm stakes-app-container || true
-          docker run -d --name stakes-app-container --restart unless-stopped -p 8001:8001 --env-file /path/to/.env $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}
-        '
+
+          # Create a temporary .env file with the secret
+          echo "DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}" > /tmp/.env
+
+          # Run the new container
+          docker run -d --name stakes-app-container \
+            --restart unless-stopped \
+            -p 8001:8001 \
+            --env-file /tmp/.env \
+            ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}
+
+          # Clean up
+          rm /tmp/.env
+        EOF
