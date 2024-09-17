@@ -31,10 +31,5 @@ EXPOSE 8001
 ENV PYTHONUNBUFFERED=1
 ENV DJANGO_SETTINGS_MODULE=stakes_manager.settings
 
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
-ENTRYPOINT ["/entrypoint.sh"]
-
 # Run Gunicorn
 CMD ["gunicorn", "--chdir", "stakes_manager", "stakes_manager.wsgi:application", "--bind", "0.0.0.0:8001"]
