@@ -74,11 +74,11 @@ jobs:
           docker run -d --name stakes-app-container \
             --restart always \
             --network host \
-            -v /home/ubuntu/staticfiles:/app/staticfiles \
+            -v /home/ubuntu/staticfiles:/app/stakes_manager/staticfiles \
             --env-file /tmp/.env \
             ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}
 
-          docker cp stakes-app:/app/staticfiles /home/ubuntu/staticfiles
+          docker cp stakes-app:/app/stakes_manager/staticfiles /home/ubuntu/staticfiles
 
           # Clean up
           rm /tmp/.env
