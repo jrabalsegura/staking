@@ -24,7 +24,7 @@ COPY . .
 # Collect static files (if applicable)
 # RUN python manage.py collectstatic --noinput
 
-# Expose the port Gunicorn will run on
+# Expose the port Gunicorn will run on!
 EXPOSE 8001
 
 # Set environment variables
