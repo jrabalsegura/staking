@@ -5,7 +5,7 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # Install system dependencies (if any)
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y && apt-get install -y awscli  \
     build-essential
 
 # Install Poetry
@@ -30,6 +30,11 @@ EXPOSE 8001
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
 ENV DJANGO_SETTINGS_MODULE=stakes_manager.settings
+
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
 
 # Run Gunicorn
 CMD ["gunicorn", "--chdir", "stakes_manager", "stakes_manager.wsgi:application", "--bind", "0.0.0.0:8001"]
