@@ -21,7 +21,7 @@ RUN poetry config virtualenvs.create false \
 # Copy the rest of the application code
 COPY . .
 
-RUN python stakes_manager/manage.py collectstatic --noinput
+RUN poetry run python stakes_manager/manage.py collectstatic --noinput
 
 # Collect static files (if applicable)
 # RUN python manage.py collectstatic --noinput
@@ -34,4 +34,4 @@ ENV PYTHONUNBUFFERED=1
 ENV DJANGO_SETTINGS_MODULE=stakes_manager.settings
 
 # Run Gunicorn
-CMD ["gunicorn", "--chdir", "stakes_manager", "--workers", "3", "--worker-class", "gevent", "stakes_manager.wsgi:application", "--bind", "0.0.0.0:8001"]
+CMD ["gunicorn", "--chdir", "stakes_manager", "stakes_manager.wsgi:application", "--bind", "0.0.0.0:8001"]
