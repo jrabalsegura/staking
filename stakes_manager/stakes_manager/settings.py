@@ -26,7 +26,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['joserabalsegura.com', 'www.joserabalsegura.com', '18.202.178.232', 'ec2-18-202-178-232.eu-west-1.compute.amazonaws.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['joserabalsegura.com', 'www.joserabalsegura.com', '18.202.178.232', 'ec2-3-253-172-107.eu-west-1.compute.amazonaws.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
