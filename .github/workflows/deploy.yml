@@ -72,8 +72,8 @@ jobs:
 
           # Run the new container
           docker run -d --name stakes-app-container \
-            --restart unless-stopped \
-            -p 8001:8001 \
+            --restart always \
+            --network host \
             -v /home/ubuntu/staticfiles:/app/staticfiles \
             --env-file /tmp/.env \
             ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}

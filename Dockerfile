@@ -34,4 +34,4 @@ ENV PYTHONUNBUFFERED=1
 ENV DJANGO_SETTINGS_MODULE=stakes_manager.settings
 
 # Run Gunicorn
-CMD ["gunicorn", "--chdir", "stakes_manager", "stakes_manager.wsgi:application", "--bind", "0.0.0.0:8001", "--workers", "3"]
+CMD ["gunicorn", "--chdir", "stakes_manager", "stakes_manager.wsgi:application", "--bind", "127.0.0.1:8001", "--workers", "3"]
