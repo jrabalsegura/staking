@@ -80,6 +80,9 @@ jobs:
 
           docker cp stakes-app:/app/stakes_manager/staticfiles /home/ubuntu/staticfiles
 
+          # Run collectstatic
+          docker exec stakes-app-container python stakes_manager/manage.py collectstatic --noinput
+
           # Clean up
           rm /tmp/.env
         EOF
