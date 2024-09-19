@@ -11,6 +11,7 @@ class Bet(models.Model):
     next_stake = models.FloatField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    daily_profit = models.FloatField(default=0)
 
     def __str__(self):
         return f"{self.stake} a {self.odd} - {self.result}"

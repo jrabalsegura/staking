@@ -11,7 +11,14 @@
 <body>
     <header class="header">
         <h1>Stake: {{ current_stake|floatformat:2 }} €</h1>
-        <p class="mult">Mult: {{ current_multiplier|floatformat:3 }}</p>
+        <div class="header-info">
+            <p class="mult">Mult: {{ current_multiplier|floatformat:3 }}</p>
+            <p class="daily-profit">
+                <span class="{% if daily_profit > 0 %}yes-result{% elif daily_profit < 0 %}no-result{% endif %}">
+                    {{ daily_profit|floatformat:2 }} €
+                </span>
+            </p>
+        </div>
     </header>
 
     <main>

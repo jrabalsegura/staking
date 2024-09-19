@@ -86,8 +86,6 @@ li {
     border-bottom: 1px solid #ddd;
 }
 
-
-
 main {
     display: flex;
     flex-direction: column;
@@ -120,5 +118,12 @@ main {
 .no-result {
     font-weight: bold;
     color: red;
+}
+
+.header-info {
+    display: flex;
+    justify-content: space-between;
+    min-width: 360px;
+    width: 50%;
 }
 

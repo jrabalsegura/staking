@@ -86,8 +86,6 @@ li {
     border-bottom: 1px solid #ddd;
 }
 
-
-
 main {
     display: flex;
     flex-direction: column;
@@ -110,5 +108,20 @@ main {
     display: flex;
     justify-content: space-around;
     width: 100%;
+}
+
+.yes-result {
+    font-weight: bold;
+    color: green;
+}
+
+.no-result {
+    font-weight: bold;
+    color: red;
+}
+
+.header-info {
+    display: flex;
+    justify-content: space-between;
 }
 

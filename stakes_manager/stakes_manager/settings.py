@@ -21,10 +21,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
-#SECRET_KEY = 'django-insecure-1234567890'
+#SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+SECRET_KEY = 'django-insecure-1234567890'
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.environ.get('IS_DEVELOPMENT', True)
 
 ALLOWED_HOSTS = ['joserabalsegura.com', 'www.joserabalsegura.com', 'stake.joserabalsegura.com', 'www.stake.joserabalsegura.com', '18.202.178.232', 'ec2-3-253-172-107.eu-west-1.compute.amazonaws.com', 'localhost', '127.0.0.1']
 
@@ -107,7 +107,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Madrid'
 
 USE_I18N = True
 
