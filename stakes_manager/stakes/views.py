@@ -7,7 +7,7 @@ from datetime import datetime
 min_stake = 0.01
 max_stake = 0.07
 multiplier_y = 0.002
-multiplier_n = 0.002526
+multiplier_n = 0.002544
 
 def round_to_hundred(number):
     return math.ceil(number / 100) * 100
