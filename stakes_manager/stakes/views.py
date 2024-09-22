@@ -9,9 +9,6 @@ max_stake = 0.07
 multiplier_y = 0.002
 multiplier_n = 0.002544
 
-def round_to_hundred(number):
-    return math.ceil(number / 100) * 100
-
 def round_to_5_decimals(number):
     return round(number, 5)
 
@@ -30,7 +27,7 @@ def process_bet(stake, odd, choice):
     if choice == 'y':
         balance = round_to_5_decimals(balance + stake * odd - stake)
         next_multiplier = round_to_5_decimals(max(multiplier - multiplier_y, min_stake))
-        next_stake = round_to_5_decimals(next_multiplier * round_to_hundred(balance))
+        next_stake = round_to_5_decimals(next_multiplier * balance)
         if same_day:
             daily_profit = round_to_5_decimals(last_daily_profit + stake * odd - stake)
         else:
@@ -39,7 +36,7 @@ def process_bet(stake, odd, choice):
     elif choice == 'n':
         balance = round_to_5_decimals(balance - stake)
         next_multiplier = round_to_5_decimals(min(multiplier + multiplier_n, max_stake))
-        next_stake = round_to_5_decimals(next_multiplier * round_to_hundred(balance))
+        next_stake = round_to_5_decimals(next_multiplier * balance)
         if same_day:
             daily_profit = round_to_5_decimals(last_daily_profit - stake)
         else:
@@ -47,7 +44,7 @@ def process_bet(stake, odd, choice):
     elif choice == 'hl':
         balance = round_to_5_decimals(balance - stake / 2)
         next_multiplier = round_to_5_decimals(min(multiplier + multiplier_n, max_stake))
-        next_stake = round_to_5_decimals(next_multiplier * round_to_hundred(balance))
+        next_stake = round_to_5_decimals(next_multiplier * balance)
         if same_day:
             daily_profit = round_to_5_decimals(last_daily_profit - stake / 2)
         else:
