@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-1234567890')
 #SECRET_KEY = 'django-insecure-1234567890'
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('IS_DEVELOPMENT', True)
+DEBUG = True
 
 ALLOWED_HOSTS = ['joserabalsegura.com', 'www.joserabalsegura.com', 'stake.joserabalsegura.com', 'www.stake.joserabalsegura.com', '18.202.178.232', 'ec2-3-253-172-107.eu-west-1.compute.amazonaws.com', 'localhost', '127.0.0.1']
 
@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'stakes',
+    'ninja',
 ]
 
 MIDDLEWARE = [
