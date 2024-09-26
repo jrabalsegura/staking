@@ -23,9 +23,6 @@ COPY . .
 
 # RUN poetry run python stakes_manager/manage.py collectstatic --noinput
 
-# Collect static files (if applicable)
-# RUN python manage.py collectstatic --noinput
-
 # Expose the port Gunicorn will run on!
 EXPOSE 8001
 

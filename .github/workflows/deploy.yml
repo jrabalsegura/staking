@@ -44,6 +44,7 @@ jobs:
         ECR_REPOSITORY: stakes-app
         IMAGE_TAG: ${{ github.sha }}
         DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+        IS_DEVELOPMENT: ${{ secrets.IS_DEVELOPMENT }}
       run: |
         echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
         ssh -o StrictHostKeyChecking=no -i private_key ${USER}@${HOST} << EOF
@@ -69,6 +70,7 @@ jobs:
 
           # Create a temporary .env file with the secret
           echo "DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}" > /tmp/.env
+          echo "IS_DEVELOPMENT=${IS_DEVELOPMENT}" >> /tmp/.env
 
           # Run the new container
           docker run -d --name stakes-app-container \
@@ -85,4 +87,7 @@ jobs:
 
           # Clean up
           rm /tmp/.env
+
+          # Prune Docker resources
+          docker system prune -af --volumes
         EOF
