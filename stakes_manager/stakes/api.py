@@ -1,4 +1,6 @@
 from ninja import NinjaAPI
+from ninja import Schema
+from ninja.errors import HttpError
 from .models import Bet
 from datetime import datetime
 api = NinjaAPI()
@@ -67,24 +69,32 @@ def process_bet(stake, odd, choice):
         next_stake=next_stake,
         daily_profit=daily_profit
     )
+    
+class NewBet(Schema):
+    stake: float
+    odd: float
+    choice: str
 
 @api.post("/bet/")
-def create_bet(request):
+def create_bet(request, bet: NewBet):
     try:
-        data = request.json()
-        stake = float(data.get('stake'))
-        odd = float(data.get('odd'))
-        choice = data.get('choice')
+        stake = float(bet.stake)
+        odd = float(bet.odd)
+        choice = bet.choice
+        
+        print(stake, odd, choice)
 
         if not all([stake, odd, choice]):
-            return {"error": "Missing required fields"}, 400
+            raise HttpError(400, "Missing required fields")
 
         if choice not in ['y', 'n', 'hl']:
-            return {"error": "Invalid choice"}, 400
+            raise HttpError(400, "Invalid choice")
 
         process_bet(stake, odd, choice)
-        return {"message": "Bet created successfully"}, 201
-    except ValueError:
-        return {"error": "Invalid data types"}, 400
+        return {"message": "Bet created successfully"}
+    except ValueError as ve:
+        raise HttpError(400, f"Invalid data types: {str(ve)}")
+    except HttpError as he:
+        raise
     except Exception as e:
-        return {"error": str(e)}, 500
+        raise HttpError(500, f"An unexpected error occurred: {str(e)}")
