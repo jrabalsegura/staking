@@ -70,9 +70,21 @@ def process_bet(stake, odd, choice):
 
 @api.post("/bet/")
 def create_bet(request):
-    #Get stake, odd and choice from request and create a new bet
-    stake = request.data.get('stake')
-    odd = request.data.get('odd')
-    choice = request.data.get('choice')
-    process_bet(stake, odd, choice)
-    return {"message": "Bet created successfully"}
+    try:
+        data = request.json()
+        stake = float(data.get('stake'))
+        odd = float(data.get('odd'))
+        choice = data.get('choice')
+
+        if not all([stake, odd, choice]):
+            return {"error": "Missing required fields"}, 400
+
+        if choice not in ['y', 'n', 'hl']:
+            return {"error": "Invalid choice"}, 400
+
+        process_bet(stake, odd, choice)
+        return {"message": "Bet created successfully"}, 201
+    except ValueError:
+        return {"error": "Invalid data types"}, 400
+    except Exception as e:
+        return {"error": str(e)}, 500
