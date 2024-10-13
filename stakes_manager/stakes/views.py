@@ -8,6 +8,7 @@ min_stake = 0.01
 max_stake = 0.07
 multiplier_y = 0.002
 multiplier_n = 0.002544
+#OJO cambiar también en api!!!! 
 
 def round_to_5_decimals(number):
     return round(number, 5)
