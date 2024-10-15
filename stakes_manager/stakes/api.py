@@ -30,7 +30,7 @@ def create_bet(request, bet: NewBet):
         if not all([stake, odd, choice]):
             raise HttpError(400, "Missing required fields")
 
-        if choice not in ['y', 'n', 'hl']:
+        if choice not in ['y', 'n', 'hl', 'hw']:
             raise HttpError(400, "Invalid choice")
 
         process_bet(stake, odd, choice)

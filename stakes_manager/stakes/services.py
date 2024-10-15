@@ -48,6 +48,15 @@ def process_bet(stake, odd, choice):
             daily_profit = round_to_5_decimals(last_daily_profit - stake / 2)
         else:
             daily_profit = round_to_5_decimals(-stake / 2)
+    elif choice == 'hw':
+        balance = round_to_5_decimals(balance + stake * odd / 2 - stake)
+        next_multiplier = round_to_5_decimals(max(multiplier - multiplier_y, min_stake))
+        next_stake = round_to_5_decimals(next_multiplier * balance)
+        if same_day:
+            daily_profit = round_to_5_decimals(last_daily_profit + stake * odd / 2 - stake)
+        else:
+            daily_profit = round_to_5_decimals(stake * odd / 2 - stake)
+            
     
     # Create a new Bet
     Bet.objects.create(
