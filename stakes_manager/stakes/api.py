@@ -17,6 +17,10 @@ class NewBet(Schema):
     stake: float
     odd: float
     choice: str
+    
+class NewBetPending(Schema):
+    stake: float
+    odd: float
 
 @api.post("/bet/")
 def create_bet(request, bet: NewBet):
@@ -43,7 +47,7 @@ def create_bet(request, bet: NewBet):
         raise HttpError(500, f"An unexpected error occurred: {str(e)}")
     
 @api.post("/bet/pending/")
-def create_pending(request, bet: NewBet):
+def create_pending(request, bet: NewBetPending):
     try:
         stake = float(bet.stake)
         odd = float(bet.odd)
