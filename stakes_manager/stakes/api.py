@@ -2,7 +2,7 @@ from ninja import NinjaAPI
 from ninja import Schema
 from ninja.errors import HttpError
 from .models import Bet
-from .services import process_bet
+from .services import process_bet, create_bet_pending
 api = NinjaAPI()
 
 
@@ -41,3 +41,22 @@ def create_bet(request, bet: NewBet):
         raise
     except Exception as e:
         raise HttpError(500, f"An unexpected error occurred: {str(e)}")
+    
+@api.post("/bet/pending/")
+def create_pending(request, bet: NewBet):
+    try:
+        stake = float(bet.stake)
+        odd = float(bet.odd)
+        
+        print(stake, odd)
+        
+        create_bet_pending(stake, odd)
+        
+        return {"message": "Bet pending created successfully"}
+    except ValueError as ve:
+        raise HttpError(400, f"Invalid data types: {str(ve)}")
+    except HttpError as he:
+        raise
+    except Exception as e:
+        raise HttpError(500, f"An unexpected error occurred: {str(e)}")
+
