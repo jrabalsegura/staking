@@ -4,8 +4,8 @@ from django.urls import reverse
 from .models import Bet, BetPending
 import math
 from datetime import datetime
-from .services import process_bet, check_if_same_day, get_last_bet, get_last_10_bets, get_pending_bets, create_bet_pending
-
+from .services import process_bet, check_if_same_day, get_last_bet, get_last_10_bets, get_pending_bets, create_bet_pending, update_bet_service
+from .forms import BetForm
 # Create your views here.
 @require_http_methods(["GET", "POST"])
 def stake_view(request):
@@ -67,3 +67,29 @@ def update_bet_pending(request, id):
     else:
         # If no valid choice is provided, redirect back to the same page
         return redirect(request.META.get('HTTP_REFERER', reverse('stakes:stake')))
+    
+@require_http_methods(["GET","POST"])
+def update_bet(request, id):
+    # Get the existing bet
+    bet = get_object_or_404(Bet, id=id)
+    
+    if request.method == 'POST':
+        form = BetForm(request.POST)
+        if form.is_valid():
+            update_bet_service(id, form.cleaned_data['stake'], form.cleaned_data['odd'], form.cleaned_data['result'], form.cleaned_data['next_multiplier'], form.cleaned_data['balance'], form.cleaned_data['next_stake'], form.cleaned_data['daily_profit'])
+            return redirect(reverse('stakes:stake'))
+        else:
+            return render(request, 'stakes/stake.html', {'form': form})
+    else:
+        # Prepopulate the form with existing bet data
+        initial_data = {
+            'stake': bet.stake,
+            'odd': bet.odd,
+            'result': bet.result,
+            'next_multiplier': bet.next_multiplier,
+            'balance': bet.balance,
+            'next_stake': bet.next_stake,
+            'daily_profit': bet.daily_profit,
+        }
+        form = BetForm(initial=initial_data)
+        return render(request, 'stakes/betform.html', {'form': form, 'id': id})

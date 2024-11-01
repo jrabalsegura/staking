@@ -134,3 +134,13 @@ main {
     list-style-type: none;
 }
 
+.edit-icon {
+    display: inline-flex;
+    align-items: center;
+    color: #666;
+    margin-left: 4px;
+}
+
+.edit-icon:hover {
+    color: #333;
+}

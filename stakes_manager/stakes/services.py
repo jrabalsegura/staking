@@ -1,6 +1,6 @@
 from .models import Bet, BetPending
 from datetime import datetime
-
+from django.shortcuts import get_object_or_404
 
 min_stake = 0.01
 max_stake = 0.07
@@ -83,6 +83,17 @@ def create_bet_pending(stake, odd):
         stake=stake,
         odd=odd
     )
+    
+def update_bet_service(bet_id, stake, odd, result, next_multiplier, balance, next_stake, daily_profit):
+    bet = get_object_or_404(Bet, id=bet_id)
+    bet.stake = stake
+    bet.odd = odd
+    bet.result = result
+    bet.next_multiplier = next_multiplier
+    bet.balance = balance
+    bet.next_stake = next_stake
+    bet.daily_profit = daily_profit
+    bet.save()
     
 def get_last_stake():
     last_bet = get_last_bet()
