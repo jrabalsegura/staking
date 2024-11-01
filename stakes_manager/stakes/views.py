@@ -4,7 +4,7 @@ from django.urls import reverse
 from .models import Bet, BetPending
 import math
 from datetime import datetime
-from .services import process_bet, check_if_same_day, get_last_bet, get_last_10_bets, get_pending_bets, create_bet_pending, update_bet_service
+from .services import process_bet, check_if_same_day, get_last_bet, get_last_10_bets, get_pending_bets, create_bet_pending, update_bet_service, delete_bet_service
 from .forms import BetForm
 # Create your views here.
 @require_http_methods(["GET", "POST"])
@@ -93,3 +93,8 @@ def update_bet(request, id):
         }
         form = BetForm(initial=initial_data)
         return render(request, 'stakes/betform.html', {'form': form, 'id': id})
+    
+@require_http_methods(["POST"])
+def delete_bet(request, id):
+    delete_bet_service(id)
+    return redirect(reverse('stakes:stake'))

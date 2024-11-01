@@ -8,12 +8,16 @@
     <title>Stake Manager</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
-<body>
+<body style="padding: 20px;">
 
-    <form method="POST" action="{% url 'stakes:update_bet' id %}">
+    <form method="POST" action="{% url 'stakes:update_bet' id %}" style="max-width: 500px; margin: 0 auto;">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Update Bet</button>
+        <button type="submit" style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin-bottom: 20px;">Update Bet</button>
+    </form>
+    <form method="POST" action="{% url 'stakes:delete_bet' id %}" style="max-width: 500px; margin: 0 auto;">
+        {% csrf_token %}
+        <button type="submit" style="background-color: #dc3545; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Delete Bet</button>
     </form>
     
 </body>

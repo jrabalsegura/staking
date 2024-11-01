@@ -95,6 +95,10 @@ def update_bet_service(bet_id, stake, odd, result, next_multiplier, balance, nex
     bet.daily_profit = daily_profit
     bet.save()
     
+def delete_bet_service(bet_id):
+    bet = get_object_or_404(Bet, id=bet_id)
+    bet.delete()
+    
 def get_last_stake():
     last_bet = get_last_bet()
     return last_bet.next_stake if last_bet else 0
