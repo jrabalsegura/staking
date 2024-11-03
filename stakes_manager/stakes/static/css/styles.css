@@ -110,6 +110,13 @@ main {
     width: 100%;
 }
 
+.last-bets ul li > span:first-child {
+    width: 60%;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+
 .yes-result {
     font-weight: bold;
     color: green;
@@ -144,3 +151,9 @@ main {
 .edit-icon:hover {
     color: #333;
 }
+
+.delete-icon:hover {
+    color: #333;
+}
+
+
