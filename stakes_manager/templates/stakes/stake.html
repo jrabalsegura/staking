@@ -89,20 +89,22 @@
                         &nbsp;                       
                         <span>
                             {{ bet.balance|floatformat:2 }} €&nbsp;&nbsp;&nbsp;
-                            <a href="{% url 'stakes:update_bet' bet.id %}" class="edit-icon">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
-                                </svg>
-                            </a>
-                            <form method="POST" action="{% url 'stakes:delete_bet' bet.id %}" style="display: inline-block; width: fit-content; margin-left: 4px; padding-top: 2px;">
-                                {% csrf_token %}
-                                <button type="submit" class="delete-icon" style="display: flex; width: fit-content; background: none; border: none; padding: 0; cursor: pointer;">
+                            <span class="action-icons">
+                                <a href="{% url 'stakes:update_bet' bet.id %}" class="edit-icon">
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <line x1="4" y1="4" x2="20" y2="20" stroke="red" stroke-width="2"/>
-                                        <line x1="20" y1="4" x2="4" y2="20" stroke="red" stroke-width="2"/>
+                                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
                                     </svg>
-                                </button>
-                            </form>
+                                </a>
+                                <form method="POST" action="{% url 'stakes:delete_bet' bet.id %}" style="display: inline-block; width: fit-content; margin-left: 4px; padding-top: 2px;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="delete-icon" style="display: flex; width: fit-content; background: none; border: none; padding: 0; cursor: pointer;">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <line x1="4" y1="4" x2="20" y2="20" stroke="red" stroke-width="2"/>
+                                            <line x1="20" y1="4" x2="4" y2="20" stroke="red" stroke-width="2"/>
+                                        </svg>
+                                    </button>
+                                </form>
+                            </span>
                         </span>
                     </li>
                 {% endfor %}

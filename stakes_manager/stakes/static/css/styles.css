@@ -156,4 +156,19 @@ main {
     color: #333;
 }
 
+.action-icons {
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.last-bets li:hover .action-icons {
+    opacity: 1;
+}
+
+/* Always show icons on small screens/touch devices */
+@media (max-width: 768px) {
+    .action-icons {
+        opacity: 1;
+    }
+}
 
