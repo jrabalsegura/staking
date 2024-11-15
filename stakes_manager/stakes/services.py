@@ -21,7 +21,7 @@ def process_bet(stake, odd, choice):
     
     if choice == 'y':
         balance = round_to_5_decimals(balance + stake * odd - stake)
-        next_stake = round_to_5_decimals(percentage * balance)
+        next_stake = round_to_5_decimals(max(percentage * balance, 1))
         if same_day:
             daily_profit = round_to_5_decimals(last_daily_profit + stake * odd - stake)
         else:
