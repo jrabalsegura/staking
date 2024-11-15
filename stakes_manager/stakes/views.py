@@ -7,6 +7,7 @@ from datetime import datetime
 from .services import process_bet, check_if_same_day, get_last_bet, get_last_10_bets, get_pending_bets, create_bet_pending, update_bet_service, delete_bet_service
 from .forms import BetForm
 # Create your views here.
+
 @require_http_methods(["GET", "POST"])
 def stake_view(request):
     if request.method == 'POST':
@@ -27,7 +28,6 @@ def stake_view(request):
     # Get the last bet for stake and multiplier
     last_bet = get_last_bet()
     current_stake = last_bet.next_stake if last_bet else 0
-    current_multiplier = last_bet.next_multiplier if last_bet else 0
     
     #Get daily profit and check if it's same day that last_bet was created
     if check_if_same_day(last_bet.created_at, datetime.now()):
@@ -43,7 +43,6 @@ def stake_view(request):
 
     context = {
         'current_stake': current_stake,
-        'current_multiplier': current_multiplier,
         'pending_bets': pending_bets,
         'last_bets': last_bets,
         'daily_profit': daily_profit,
@@ -76,7 +75,7 @@ def update_bet(request, id):
     if request.method == 'POST':
         form = BetForm(request.POST)
         if form.is_valid():
-            update_bet_service(id, form.cleaned_data['stake'], form.cleaned_data['odd'], form.cleaned_data['result'], form.cleaned_data['next_multiplier'], form.cleaned_data['balance'], form.cleaned_data['next_stake'], form.cleaned_data['daily_profit'])
+            update_bet_service(id, form.cleaned_data['stake'], form.cleaned_data['odd'], form.cleaned_data['result'], form.cleaned_data['balance'], form.cleaned_data['next_stake'], form.cleaned_data['daily_profit'])
             return redirect(reverse('stakes:stake'))
         else:
             return render(request, 'stakes/stake.html', {'form': form})
@@ -86,7 +85,6 @@ def update_bet(request, id):
             'stake': bet.stake,
             'odd': bet.odd,
             'result': bet.result,
-            'next_multiplier': bet.next_multiplier,
             'balance': bet.balance,
             'next_stake': bet.next_stake,
             'daily_profit': bet.daily_profit,
