@@ -46,6 +46,7 @@ def stake_view(request):
         'pending_bets': pending_bets,
         'last_bets': last_bets,
         'daily_profit': daily_profit,
+        'nextState': last_bet.nextState if last_bet else "",
     }
 
     return render(request, 'stakes/stake.html', context)
