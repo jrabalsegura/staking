@@ -31,15 +31,15 @@ def calculate_next_state(state, balance):
             return "500-1000"
     elif state == "2000-4000":
         if balance >= 4000:
-            return "4000-8000"
+            return "4000-7000"
         elif balance < 1000:
             return "1000-2000"
-    elif state == "4000-8000":
-        if balance >= 8000:
-            return "8000-12000"
+    elif state == "4000-7000":
+        if balance >= 7000:
+            return "7000-12000"
         elif balance < 2000:
             return "2000-4000"
-    elif state == "8000-12000":
+    elif state == "7000-12000":
         if balance >= 12000:
             return "12000-20000"
         elif balance < 4000:
@@ -47,8 +47,8 @@ def calculate_next_state(state, balance):
     elif state == "12000-20000":
         if balance >= 20000:
             return "20000-30000"
-        elif balance < 8000:
-            return "8000-12000"
+        elif balance < 7000:
+            return "7000-12000"
     elif state == "20000-30000":
         if balance >= 30000:
             return "30000-45000"
