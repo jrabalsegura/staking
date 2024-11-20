@@ -83,7 +83,7 @@ jobs:
             --restart always \
             --network host \
             -v /home/ubuntu/staticfiles:/app/stakes_manager/staticfiles \
-            -v /home/ubuntu/stakes_manager/db.sqlite3:/app/stakes_manager/db.sqlite3 \
+            -v /home/ubuntu/stakes_manager:/app/stakes_manager \
             --env-file /tmp/.env \
             ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}
 
@@ -101,6 +101,7 @@ jobs:
 
           # Clean up
           rm /tmp/.env
+          rm /home/ubuntu/stakes_manager/db.sqlite3.backup
 
           # Prune Docker resources
           docker system prune -af --volumes
