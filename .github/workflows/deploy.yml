@@ -64,6 +64,11 @@ jobs:
           # Pull the image
           docker pull ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}
 
+          # Create a backup directory if it doesn't exist
+          mkdir -p /home/ubuntu/sqlite_backup_stakes_manager
+
+          docker cp stakes-app-container:/app/stakes_manager/db.sqlite3 /home/ubuntu/sqlite_backup_stakes_manager/db.sqlite3.backup || true
+
           # Stop and remove existing container
           docker stop stakes-app-container || true
           docker rm stakes-app-container || true
@@ -71,6 +76,10 @@ jobs:
           # Create a temporary .env file with the secret
           echo "DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}" > /tmp/.env
           echo "IS_DEVELOPMENT=${IS_DEVELOPMENT}" >> /tmp/.env
+
+          if [ -f /home/ubuntu/sqlite_backup_stakes_manager/db.sqlite3.backup ]; then
+            docker cp /home/ubuntu/sqlite_backup_stakes_manager/db.sqlite3.backup stakes-app-container:/app/stakes_manager/db.sqlite3
+          fi
 
           # Run the new container
           docker run -d --name stakes-app-container \
@@ -80,7 +89,9 @@ jobs:
             --env-file /tmp/.env \
             ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}
 
-          docker cp stakes-app:/app/stakes_manager/staticfiles /home/ubuntu/staticfiles
+          if [ -f /home/ubuntu/sqlite_backup_stakes_manager/db.sqlite3.backup ]; then
+            docker cp /home/ubuntu/sqlite_backup_stakes_manager/db.sqlite3.backup stakes-app-container:/app/stakes_manager/db.sqlite3
+          fi
 
           # Run collectstatic
           docker exec stakes-app-container python stakes_manager/manage.py collectstatic --noinput
