@@ -4,7 +4,7 @@ from django.urls import reverse
 from .models import Bet, BetPending
 import math
 from datetime import datetime
-from .services import process_bet, check_if_same_day, get_last_bet, get_last_10_bets, get_pending_bets, create_bet_pending, update_bet_service, delete_bet_service
+from .services import process_bet, check_if_same_day, get_last_bet, get_last_5_bets, get_pending_bets, create_bet_pending, update_bet_service, delete_bet_service
 from .forms import BetForm
 # Create your views here.
 
@@ -14,12 +14,12 @@ def stake_view(request):
         stake = float(request.POST.get('stake', 0))
         odd = float(request.POST.get('odd', 0))
         choice = request.POST.get('choice')
-        
+        method = request.POST.get('method')
         if choice in ['y', 'n', 'hl']:
-            process_bet(stake, odd, choice)
+            process_bet(stake, odd, choice, method)
         else:
             # Create a new BetPending
-            create_bet_pending(stake, odd)
+            create_bet_pending(stake, odd, method)
         
         return redirect('stakes:stake')  # Redirect back to the same page after processing
 
@@ -38,8 +38,8 @@ def stake_view(request):
     # Get pending bets
     pending_bets = get_pending_bets()
 
-    # Get last 10 bets in reverse order
-    last_bets = get_last_10_bets()
+    # Get last 5 days of bets in reverse order
+    last_bets = get_last_5_bets()
 
     context = {
         'current_stake': current_stake,
@@ -57,7 +57,7 @@ def update_bet_pending(request, id):
     choice = request.POST.get('choice')
     
     if choice in ['y', 'n', 'hl']:
-        process_bet(bet_pending.stake, bet_pending.odd, choice)
+        process_bet(bet_pending.stake, bet_pending.odd, choice, bet_pending.method)
         
         # Delete the BetPending object as it's no longer needed
         bet_pending.delete()
@@ -76,7 +76,7 @@ def update_bet(request, id):
     if request.method == 'POST':
         form = BetForm(request.POST)
         if form.is_valid():
-            update_bet_service(id, form.cleaned_data['stake'], form.cleaned_data['odd'], form.cleaned_data['result'], form.cleaned_data['balance'], form.cleaned_data['next_stake'], form.cleaned_data['daily_profit'])
+            update_bet_service(id, form.cleaned_data['stake'], form.cleaned_data['odd'], form.cleaned_data['result'], form.cleaned_data['balance'], form.cleaned_data['next_stake'], form.cleaned_data['daily_profit'], form.cleaned_data['method'])
             return redirect(reverse('stakes:stake'))
         else:
             return render(request, 'stakes/stake.html', {'form': form})
@@ -89,6 +89,7 @@ def update_bet(request, id):
             'balance': bet.balance,
             'next_stake': bet.next_stake,
             'daily_profit': bet.daily_profit,
+            'method': bet.method,
         }
         form = BetForm(initial=initial_data)
         return render(request, 'stakes/betform.html', {'form': form, 'id': id})

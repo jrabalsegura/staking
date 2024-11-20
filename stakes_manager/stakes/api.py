@@ -17,27 +17,28 @@ class NewBet(Schema):
     stake: float
     odd: float
     choice: str
-    
+    method: str
 class NewBetPending(Schema):
     stake: float
     odd: float
-
+    method: str
 @api.post("/bet/")
 def create_bet(request, bet: NewBet):
     try:
         stake = float(bet.stake)
         odd = float(bet.odd)
         choice = bet.choice
+        method = bet.method
         
-        print(stake, odd, choice)
+        print(stake, odd, choice, method)
 
-        if not all([stake, odd, choice]):
+        if not all([stake, odd, choice, method]):
             raise HttpError(400, "Missing required fields")
 
         if choice not in ['y', 'n', 'hl', 'hw']:
             raise HttpError(400, "Invalid choice")
 
-        process_bet(stake, odd, choice)
+        process_bet(stake, odd, choice, method)
         return {"message": "Bet created successfully"}
     except ValueError as ve:
         raise HttpError(400, f"Invalid data types: {str(ve)}")
@@ -51,10 +52,11 @@ def create_pending(request, bet: NewBetPending):
     try:
         stake = float(bet.stake)
         odd = float(bet.odd)
+        method = bet.method
         
-        print(stake, odd)
+        print(stake, odd, method)
         
-        create_bet_pending(stake, odd)
+        create_bet_pending(stake, odd, method)
         
         return {"message": "Bet pending created successfully"}
     except ValueError as ve:

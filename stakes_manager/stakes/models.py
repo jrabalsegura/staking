@@ -28,6 +28,13 @@ class Bet(models.Model):
     ]
     
     nextState = models.CharField(max_length=15, choices=STATE_CHOICES)
+    
+    METHOD_CHOICES = [
+        ('u0', 'u0'),
+        ("u1", "u1"),
+    ]
+        
+    method = models.CharField(max_length=2, choices=METHOD_CHOICES)
 
     def __str__(self):
         return f"{self.stake} a {self.odd} - {self.result}"
@@ -37,6 +44,13 @@ class BetPending(models.Model):
     odd = models.FloatField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
+    METHOD_CHOICES = [
+        ('u0', 'u0'),
+        ("u1", "u1"),
+    ]
+    
+    method = models.CharField(max_length=2, choices=METHOD_CHOICES)
 
     def __str__(self):
         return f"{self.stake} a {self.odd}"

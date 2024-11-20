@@ -1,8 +1,8 @@
 from .models import Bet, BetPending
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 
-#OJO cambiar también en api!!!! 
 
 def round_to_5_decimals(number):
     return round(number, 5)
@@ -96,14 +96,18 @@ def calculate_next_stake(state, balance):
         return 300
 
 
-def process_bet(stake, odd, choice):
+def process_bet(stake, odd, choice, method):
     last_bet = Bet.objects.last()
-            
+    
+    # Get the current time in the Europe/Madrid timezone
+    current_time = timezone.localtime()
+    
     balance = last_bet.balance
     last_bet_date = last_bet.created_at
     last_daily_profit = last_bet.daily_profit
     last_state = last_bet.nextState
-    same_day = check_if_same_day(last_bet_date, datetime.now())
+    
+    same_day = check_if_same_day(last_bet_date, current_time)
     
     if choice == 'y':
         balance = round_to_5_decimals(balance + stake * odd - stake)
@@ -143,25 +147,29 @@ def process_bet(stake, odd, choice):
         balance=balance,  # You may want to calculate this based on your logic
         next_stake=next_stake,
         daily_profit=daily_profit,
-        nextState=next_state
+        nextState=next_state,
+        method=method
     )
     
 def get_last_bet():
     return Bet.objects.last()
 
-def get_last_10_bets():
-    return Bet.objects.order_by('-created_at')[:10]
+def get_last_5_bets():
+    two_days_ago = datetime.now() - timedelta(days=5)
+    return Bet.objects.filter(created_at__gte=two_days_ago).order_by('-created_at')
 
 def get_pending_bets():
     return BetPending.objects.all()
 
-def create_bet_pending(stake, odd):
+def create_bet_pending(stake, odd, method):
     BetPending.objects.create(
         stake=stake,
-        odd=odd
+        odd=odd,
+        method=method
     )
     
-def update_bet_service(bet_id, stake, odd, result, balance, next_stake, daily_profit):
+
+def update_bet_service(bet_id, stake, odd, result, balance, next_stake, daily_profit, method):
     bet = get_object_or_404(Bet, id=bet_id)
     bet.stake = stake
     bet.odd = odd
@@ -169,6 +177,7 @@ def update_bet_service(bet_id, stake, odd, result, balance, next_stake, daily_pr
     bet.balance = balance
     bet.next_stake = next_stake
     bet.daily_profit = daily_profit
+    bet.method = method
     bet.save()
     
 def delete_bet_service(bet_id):
