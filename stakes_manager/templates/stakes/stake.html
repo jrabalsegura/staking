@@ -84,7 +84,7 @@
                             <li class="day-separator"></li>
                             <li>
                                 <span class="{% if first_bet.daily_profit > 0 %}yes-result{% elif first_bet.daily_profit < 0 %}no-result{% endif %}">
-                                    Daily result: {{ first_bet.daily_profit|floatformat:2 }} €
+                                    {{ first_bet.created_at|date:"l" }} result: {{ first_bet.daily_profit|floatformat:2 }} €
                                 </span>
                             </li>
                             <li class="day-separator"></li>
@@ -107,7 +107,7 @@
                                         {% comment %}
                                         Get daily result of next bet in loop as i am looping backwards in time
                                         {% endcomment %}
-                                        Daily result: {{ bet.daily_profit|floatformat:2 }} €
+                                        {{ bet.created_at|date:"l" }} result: {{ bet.daily_profit|floatformat:2 }} €
                                     </span>
                                 </li>
                                 <li class="day-separator"></li>
