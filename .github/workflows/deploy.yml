@@ -64,16 +64,6 @@ jobs:
           # Pull the image
           docker pull ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}
 
-          # Ensure the host directory exists
-          sudo mkdir -p /home/ubuntu/staticfiles
-          sudo mkdir -p /home/ubuntu/stakes_manager
-          sudo chown -R ubuntu:ubuntu /home/ubuntu/staticfiles
-          sudo chown -R ubuntu:ubuntu /home/ubuntu/stakes_manager
-
-
-          # Backup the database before stopping the container
-          docker cp stakes-app-container:/app/stakes_manager/db.sqlite3 /home/ubuntu/stakes_manager/db.sqlite3.backup || true
-
           # Stop and remove existing container
           docker stop stakes-app-container || true
           docker rm stakes-app-container || true
@@ -87,25 +77,16 @@ jobs:
             --restart always \
             --network host \
             -v /home/ubuntu/staticfiles:/app/stakes_manager/staticfiles \
-            -v /home/ubuntu/stakes_manager:/app/stakes_manager \
             --env-file /tmp/.env \
             ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}
 
-          # Restore the database if backup exists
-          if [ -f /home/ubuntu/stakes_manager/db.sqlite3.backup ]; then
-            docker stop stakes-app-container
-            cp /home/ubuntu/stakes_manager/db.sqlite3.backup /home/ubuntu/stakes_manager/db.sqlite3
-            docker start stakes-app-container
-          fi
-
-          docker cp stakes-app-container:/app/stakes_manager/staticfiles /home/ubuntu/staticfiles
+          docker cp stakes-app:/app/stakes_manager/staticfiles /home/ubuntu/staticfiles
 
           # Run collectstatic
           docker exec stakes-app-container python stakes_manager/manage.py collectstatic --noinput
 
           # Clean up
           rm /tmp/.env
-          rm /home/ubuntu/stakes_manager/db.sqlite3.backup
 
           # Prune Docker resources
           docker system prune -af --volumes
