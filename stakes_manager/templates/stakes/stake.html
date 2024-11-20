@@ -78,6 +78,20 @@
         <section class="last-bets">
             <h2>Last bets:</h2>
             <ul>
+                {% if last_bets %}
+                    {% with first_bet=last_bets|first %}
+                        {% if first_bet.created_at|date:"Y-m-d" != current_date|date:"Y-m-d" %}
+                            <li class="day-separator"></li>
+                            <li>
+                                <span class="{% if first_bet.daily_profit > 0 %}yes-result{% elif first_bet.daily_profit < 0 %}no-result{% endif %}">
+                                    Daily result: {{ first_bet.daily_profit|floatformat:2 }} €
+                                </span>
+                            </li>
+                            <li class="day-separator"></li>
+                        {% endif %}
+                    {% endwith %}
+                {% endif %}
+                
                 {% for bet in last_bets %}
                     {% comment %}
                     This code block adds a visual separator (day-separator) between bets from different days.
@@ -96,6 +110,7 @@
                                         Daily result: {{ bet.daily_profit|floatformat:2 }} €
                                     </span>
                                 </li>
+                                <li class="day-separator"></li>
                             {% endif %}
                         {% endwith %}
                     {% endif %}

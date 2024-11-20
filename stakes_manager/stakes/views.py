@@ -6,6 +6,7 @@ import math
 from datetime import datetime
 from .services import process_bet, check_if_same_day, get_last_bet, get_last_5_bets, get_pending_bets, create_bet_pending, update_bet_service, delete_bet_service
 from .forms import BetForm
+from django.utils import timezone
 # Create your views here.
 
 @require_http_methods(["GET", "POST"])
@@ -47,6 +48,7 @@ def stake_view(request):
         'last_bets': last_bets,
         'daily_profit': daily_profit,
         'nextState': last_bet.nextState if last_bet else "",
+        'current_date': timezone.localtime().date(),
     }
 
     return render(request, 'stakes/stake.html', context)

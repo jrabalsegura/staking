@@ -98,6 +98,7 @@ jobs:
 
           # Clean up
           rm /tmp/.env
+          rm /home/ubuntu/sqlite_backup_stakes_manager/db.sqlite3.backup
 
           # Prune Docker resources
           docker system prune -af --volumes
