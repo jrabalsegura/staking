@@ -65,7 +65,11 @@ jobs:
           docker pull ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}
 
           # Ensure the host directory exists
-          mkdir -p /home/ubuntu/stakes_manager
+          sudo mkdir -p /home/ubuntu/staticfiles
+          sudo mkdir -p /home/ubuntu/stakes_manager
+          sudo chown -R ubuntu:ubuntu /home/ubuntu/staticfiles
+          sudo chown -R ubuntu:ubuntu /home/ubuntu/stakes_manager
+
 
           # Backup the database before stopping the container
           docker cp stakes-app-container:/app/stakes_manager/db.sqlite3 /home/ubuntu/stakes_manager/db.sqlite3.backup || true
