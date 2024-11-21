@@ -95,6 +95,9 @@ jobs:
             docker cp /home/ubuntu/sqlite_backup_stakes_manager/db.sqlite3.backup stakes-app-container:/app/stakes_manager/db.sqlite3
           fi
 
+          # Run collectstatic in the container
+          docker exec stakes-app-container python stakes_manager/manage.py collectstatic --noinput
+
           # Copy collectstatic to staticfiles
           docker cp stakes-app-container:/app/stakes_manager/staticfiles /home/ubuntu/staticfiles
 
