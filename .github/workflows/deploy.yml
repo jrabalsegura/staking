@@ -96,7 +96,7 @@ jobs:
           fi
 
           #Migrate database if needed after restoring from backup
-          docker exec stakes-app-container python stakes_manager/manage.py migrate --noinput
+          #docker exec stakes-app-container python stakes_manager/manage.py migrate --noinput
 
           # Copy collectstatic to staticfiles
           docker cp stakes-app-container:/app/stakes_manager/staticfiles /home/ubuntu/staticfiles
