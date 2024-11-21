@@ -59,10 +59,7 @@ jobs:
           aws configure set default.region eu-west-1
 
           # Login to ECR
-          aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin ${ECR_REGISTRY}
-
-          # Pull the image
-          docker pull ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}
+          aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin ${ECR_REGISTRY}         
 
           # Create a backup directory if it doesn't exist
           mkdir -p /home/ubuntu/sqlite_backup_stakes_manager
@@ -78,6 +75,9 @@ jobs:
 
           # Prune Docker resources
           docker system prune -af --volumes
+
+          # Pull the image
+          docker pull ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}
 
           # Create a temporary .env file with the secret
           echo "DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}" > /tmp/.env
@@ -105,7 +105,9 @@ jobs:
 
           # Clean up
           rm /tmp/.env
-          rm /home/ubuntu/sqlite_backup_stakes_manager/db.sqlite3.backup
+          if [ -f /home/ubuntu/sqlite_backup_stakes_manager/db.sqlite3.backup ]; then
+            rm /home/ubuntu/sqlite_backup_stakes_manager/db.sqlite3.backup
+          fi
 
           
         EOF
