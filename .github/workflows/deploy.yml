@@ -67,6 +67,9 @@ jobs:
           # Create a backup directory if it doesn't exist
           mkdir -p /home/ubuntu/sqlite_backup_stakes_manager
 
+          # Create a staticfiles directory if it doesn't exist
+          mkdir -p /home/ubuntu/staticfiles
+
           docker cp stakes-app-container:/app/stakes_manager/db.sqlite3 /home/ubuntu/sqlite_backup_stakes_manager/db.sqlite3.backup || true
 
           # Stop and remove existing container
@@ -85,7 +88,6 @@ jobs:
           docker run -d --name stakes-app-container \
             --restart always \
             --network host \
-            -v /home/ubuntu/staticfiles:/app/stakes_manager/staticfiles \
             --env-file /tmp/.env \
             ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}
 
@@ -93,8 +95,8 @@ jobs:
             docker cp /home/ubuntu/sqlite_backup_stakes_manager/db.sqlite3.backup stakes-app-container:/app/stakes_manager/db.sqlite3
           fi
 
-          # Run collectstatic
-          docker exec stakes-app-container python stakes_manager/manage.py collectstatic --noinput
+          # Copy collectstatic to staticfiles
+          docker cp stakes-app-container:/app/stakes_manager/staticfiles /home/ubuntu/staticfiles
 
           # Clean up
           rm /tmp/.env

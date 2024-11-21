@@ -22,6 +22,7 @@ RUN poetry config virtualenvs.create false \
 COPY . .
 
 # RUN poetry run python stakes_manager/manage.py collectstatic --noinput
+RUN poetry run python stakes_manager/manage.py collectstatic --noinput
 
 # Expose the port Gunicorn will run on!
 EXPOSE 8001
