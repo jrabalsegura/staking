@@ -80,10 +80,6 @@ jobs:
           echo "DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}" > /tmp/.env
           echo "IS_DEVELOPMENT=${IS_DEVELOPMENT}" >> /tmp/.env
 
-          if [ -f /home/ubuntu/sqlite_backup_stakes_manager/db.sqlite3.backup ]; then
-            docker cp /home/ubuntu/sqlite_backup_stakes_manager/db.sqlite3.backup stakes-app-container:/app/stakes_manager/db.sqlite3
-          fi
-
           # Run the new container
           docker run -d --name stakes-app-container \
             --restart always \
@@ -95,8 +91,11 @@ jobs:
             docker cp /home/ubuntu/sqlite_backup_stakes_manager/db.sqlite3.backup stakes-app-container:/app/stakes_manager/db.sqlite3
           fi
 
-          #Migrate database if needed after restoring from backup
-          #docker exec stakes-app-container python stakes_manager/manage.py migrate --noinput
+          # Wait for the container to start
+          sleep 5
+
+          # Migrate database if needed after restoring from backup
+          docker exec stakes-app-container python stakes_manager/manage.py migrate --noinput
 
           # Copy collectstatic to staticfiles
           docker cp stakes-app-container:/app/stakes_manager/staticfiles /home/ubuntu/staticfiles
