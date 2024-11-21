@@ -76,6 +76,9 @@ jobs:
           docker stop stakes-app-container || true
           docker rm stakes-app-container || true
 
+          # Prune Docker resources
+          docker system prune -af --volumes
+
           # Create a temporary .env file with the secret
           echo "DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}" > /tmp/.env
           echo "IS_DEVELOPMENT=${IS_DEVELOPMENT}" >> /tmp/.env
@@ -104,6 +107,5 @@ jobs:
           rm /tmp/.env
           rm /home/ubuntu/sqlite_backup_stakes_manager/db.sqlite3.backup
 
-          # Prune Docker resources
-          docker system prune -af --volumes
+          
         EOF
