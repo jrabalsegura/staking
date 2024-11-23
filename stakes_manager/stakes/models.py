@@ -11,6 +11,7 @@ class Bet(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     daily_profit = models.FloatField(default=0)
+    number_of_bets_day = models.IntegerField(default=0)
     
     STATE_CHOICES = [
         ("<250", "<250"),

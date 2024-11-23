@@ -106,8 +106,13 @@ def process_bet(stake, odd, choice, method):
     last_bet_date = last_bet.created_at
     last_daily_profit = last_bet.daily_profit
     last_state = last_bet.nextState
-    
+    last_number_of_bets_day = last_bet.number_of_bets_day
     same_day = check_if_same_day(last_bet_date, current_time)
+    
+    if same_day:
+        number_of_bets_day = last_number_of_bets_day + 1
+    else:
+        number_of_bets_day = 1
     
     if choice == 'y':
         balance = round_to_5_decimals(balance + stake * odd - stake)
@@ -148,7 +153,8 @@ def process_bet(stake, odd, choice, method):
         next_stake=next_stake,
         daily_profit=daily_profit,
         nextState=next_state,
-        method=method
+        method=method,
+        number_of_bets_day=number_of_bets_day
     )
     
 def get_last_bet():
@@ -169,7 +175,7 @@ def create_bet_pending(stake, odd, method):
     )
     
 
-def update_bet_service(bet_id, stake, odd, result, balance, next_stake, daily_profit, method):
+def update_bet_service(bet_id, stake, odd, result, balance, next_stake, daily_profit, method, number_of_bets_day):
     bet = get_object_or_404(Bet, id=bet_id)
     bet.stake = stake
     bet.odd = odd
@@ -178,6 +184,7 @@ def update_bet_service(bet_id, stake, odd, result, balance, next_stake, daily_pr
     bet.next_stake = next_stake
     bet.daily_profit = daily_profit
     bet.method = method
+    bet.number_of_bets_day = number_of_bets_day
     bet.save()
     
 def delete_bet_service(bet_id):

@@ -4,4 +4,4 @@ from .models import Bet
 class BetForm(ModelForm):
     class Meta:
         model = Bet
-        fields = ['stake', 'odd', 'result', 'balance', 'next_stake', 'daily_profit', 'nextState', 'method']
+        fields = ['stake', 'odd', 'result', 'balance', 'next_stake', 'daily_profit', 'nextState', 'method', 'number_of_bets_day']

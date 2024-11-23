@@ -16,6 +16,10 @@
                 <span class="{% if daily_profit > 0 %}yes-result{% elif daily_profit < 0 %}no-result{% endif %}">
                     {{ daily_profit|floatformat:2 }} €
                 </span>
+                <span> &nbsp;&nbsp;&nbsp;&nbsp; </span>
+                <span class="number-of-bets">(
+                    {{ number_of_bets_day }} {% if number_of_bets_day == 1 %}bet{% else %}bets{% endif %}
+                )</span>
             </p>
             <p>
                 State: {{ nextState }}
@@ -86,6 +90,10 @@
                                 <span class="{% if first_bet.daily_profit > 0 %}yes-result{% elif first_bet.daily_profit < 0 %}no-result{% endif %}">
                                     {{ first_bet.created_at|date:"l" }} result: {{ first_bet.daily_profit|floatformat:2 }} €
                                 </span>
+                                <span> &nbsp;&nbsp;&nbsp;&nbsp; </span>
+                                <span class="number-of-bets">(
+                                    {{ number_of_bets_day }} {% if number_of_bets_day == 1 %}bet{% else %}bets{% endif %}
+                                )</span>
                             </li>
                             <li class="day-separator"></li>
                         {% endif %}
@@ -109,6 +117,10 @@
                                         {% endcomment %}
                                         {{ bet.created_at|date:"l" }} result: {{ bet.daily_profit|floatformat:2 }} €
                                     </span>
+                                    <span> &nbsp;&nbsp;&nbsp;&nbsp; </span>
+                                    <span class="number-of-bets">(
+                                        {{ number_of_bets_day }} {% if number_of_bets_day == 1 %}bet{% else %}bets{% endif %}
+                                    )</span>
                                 </li>
                                 <li class="day-separator"></li>
                             {% endif %}

@@ -33,8 +33,10 @@ def stake_view(request):
     #Get daily profit and check if it's same day that last_bet was created
     if check_if_same_day(last_bet.created_at, datetime.now()):
         daily_profit = last_bet.daily_profit
+        number_of_bets_day = last_bet.number_of_bets_day
     else:
         daily_profit = 0
+        number_of_bets_day = 0
 
     # Get pending bets
     pending_bets = get_pending_bets()
@@ -47,6 +49,7 @@ def stake_view(request):
         'pending_bets': pending_bets,
         'last_bets': last_bets,
         'daily_profit': daily_profit,
+        'number_of_bets_day': number_of_bets_day,
         'nextState': last_bet.nextState if last_bet else "",
         'current_date': timezone.localtime().date(),
     }
