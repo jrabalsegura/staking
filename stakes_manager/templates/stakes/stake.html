@@ -92,7 +92,7 @@
                                 </span>
                                 <span> &nbsp;&nbsp;&nbsp;&nbsp; </span>
                                 <span class="number-of-bets">(
-                                    {{ number_of_bets_day }} {% if number_of_bets_day == 1 %}bet{% else %}bets{% endif %}
+                                    {{ first_bet.number_of_bets_day }} {% if first_bet.number_of_bets_day == 1 %}bet{% else %}bets{% endif %}
                                 )</span>
                             </li>
                             <li class="day-separator"></li>
@@ -119,7 +119,7 @@
                                     </span>
                                     <span> &nbsp;&nbsp;&nbsp;&nbsp; </span>
                                     <span class="number-of-bets">(
-                                        {{ number_of_bets_day }} {% if number_of_bets_day == 1 %}bet{% else %}bets{% endif %}
+                                        {{ bet.number_of_bets_day }} {% if bet.number_of_bets_day == 1 %}bet{% else %}bets{% endif %}
                                     )</span>
                                 </li>
                                 <li class="day-separator"></li>
