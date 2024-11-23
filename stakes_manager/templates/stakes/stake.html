@@ -86,11 +86,10 @@
                     {% with first_bet=last_bets|first %}
                         {% if first_bet.created_at|date:"Y-m-d" != current_date|date:"Y-m-d" %}
                             <li class="day-separator"></li>
-                            <li>
+                            <li style="display: flex; justify-content: center; align-items: center; gap: 8px;">
                                 <span class="{% if first_bet.daily_profit > 0 %}yes-result{% elif first_bet.daily_profit < 0 %}no-result{% endif %}">
                                     {{ first_bet.created_at|date:"l" }} result: {{ first_bet.daily_profit|floatformat:2 }} €
                                 </span>
-                                <span> &nbsp;&nbsp;&nbsp;&nbsp; </span>
                                 <span class="number-of-bets">(
                                     {{ first_bet.number_of_bets_day }} {% if first_bet.number_of_bets_day == 1 %}bet{% else %}bets{% endif %}
                                 )</span>
@@ -110,14 +109,10 @@
                         {% with previous_bet=last_bets|slice:forloop.counter0|last %}
                             {% if bet.created_at|date:"Y-m-d" != previous_bet.created_at|date:"Y-m-d" %}
                                 <li class="day-separator"></li>
-                                <li>
+                                <li style="display: flex; justify-content: center; align-items: center; gap: 8px;">
                                     <span class="{% if bet.daily_profit > 0 %}yes-result{% elif bet.daily_profit < 0 %}no-result{% endif %}">
-                                        {% comment %}
-                                        Get daily result of next bet in loop as i am looping backwards in time
-                                        {% endcomment %}
                                         {{ bet.created_at|date:"l" }} result: {{ bet.daily_profit|floatformat:2 }} €
                                     </span>
-                                    <span> &nbsp;&nbsp;&nbsp;&nbsp; </span>
                                     <span class="number-of-bets">(
                                         {{ bet.number_of_bets_day }} {% if bet.number_of_bets_day == 1 %}bet{% else %}bets{% endif %}
                                     )</span>
