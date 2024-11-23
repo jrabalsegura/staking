@@ -81,7 +81,7 @@ def update_bet(request, id):
     if request.method == 'POST':
         form = BetForm(request.POST)
         if form.is_valid():
-            update_bet_service(id, form.cleaned_data['stake'], form.cleaned_data['odd'], form.cleaned_data['result'], form.cleaned_data['balance'], form.cleaned_data['next_stake'], form.cleaned_data['daily_profit'], form.cleaned_data['method'])
+            update_bet_service(id, form.cleaned_data['stake'], form.cleaned_data['odd'], form.cleaned_data['result'], form.cleaned_data['balance'], form.cleaned_data['next_stake'], form.cleaned_data['daily_profit'], form.cleaned_data['method'], form.cleaned_data['number_of_bets_day'])
             return redirect(reverse('stakes:stake'))
         else:
             return render(request, 'stakes/stake.html', {'form': form})
@@ -94,7 +94,9 @@ def update_bet(request, id):
             'balance': bet.balance,
             'next_stake': bet.next_stake,
             'daily_profit': bet.daily_profit,
+            'nextState': bet.nextState,
             'method': bet.method,
+            'number_of_bets_day': bet.number_of_bets_day,
         }
         form = BetForm(initial=initial_data)
         return render(request, 'stakes/betform.html', {'form': form, 'id': id})
