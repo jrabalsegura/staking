@@ -101,7 +101,7 @@ jobs:
           docker exec stakes-app-container python stakes_manager/manage.py migrate --noinput
 
           # Copy collectstatic to staticfiles
-          docker cp stakes-app-container:/app/stakes_manager/staticfiles /home/ubuntu/staticfiles
+          docker cp stakes-app-container:/app/stakes_manager/staticfiles /home/ubuntu
 
           # Clean up
           rm /tmp/.env
