@@ -110,8 +110,8 @@ main {
     width: 100%;
 }
 
-.last-bets ul li > span {
-    width: 50%;
+.last-bets ul li > span:first-child {
+    width: 60%;
     display: flex;
     justify-content: center;
     text-align: center;
@@ -172,5 +172,7 @@ main {
     }
 }
 
-
+.row-alt {
+    background-color: #f5f5f5;
+}
 

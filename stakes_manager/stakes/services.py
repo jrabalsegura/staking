@@ -172,8 +172,8 @@ def get_last_bet():
     return Bet.objects.last()
 
 
-def get_last_5_bets():
-    two_days_ago = datetime.now() - timedelta(days=5)
+def get_last_10_bets():
+    two_days_ago = datetime.now() - timedelta(days=10)
     return Bet.objects.filter(created_at__gte=two_days_ago).order_by("-created_at")
 
 

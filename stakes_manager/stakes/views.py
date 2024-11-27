@@ -11,7 +11,7 @@ from .services import (
     check_if_same_day,
     create_bet_pending,
     delete_bet_service,
-    get_last_5_bets,
+    get_last_10_bets,
     get_last_bet,
     get_pending_bets,
     process_bet,
@@ -55,8 +55,8 @@ def stake_view(request):
     # Get pending bets
     pending_bets = get_pending_bets()
 
-    # Get last 5 days of bets in reverse order
-    last_bets = get_last_5_bets()
+    # Get last 10 days of bets in reverse order
+    last_bets = get_last_10_bets()
 
     context = {
         "current_stake": current_stake,

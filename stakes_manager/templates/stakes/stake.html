@@ -98,18 +98,13 @@
                         {% endif %}
                     {% endwith %}
                 {% endif %}
-                
+
                 {% for bet in last_bets %}
-                    {% comment %}
-                    This code block adds a visual separator (day-separator) between bets from different days.
-                    It checks if the current bet's date is different from the previous bet's date,
-                    and if so, inserts a separator line item.
-                    {% endcomment %}
                     {% if forloop.counter0 > 0 %}
                         {% with previous_bet=last_bets|slice:forloop.counter0|last %}
                             {% if bet.created_at|date:"Y-m-d" != previous_bet.created_at|date:"Y-m-d" %}
                                 <li class="day-separator"></li>
-                                <li style="display: flex; justify-content: center; align-items: center; gap: 8px;">
+                                <li style="display: flex; justify-content: center; align-items: center; gap: 8px;"">
                                     <span class="{% if bet.daily_profit > 0 %}yes-result{% elif bet.daily_profit < 0 %}no-result{% endif %}">
                                         {{ bet.created_at|date:"l" }} result: {{ bet.daily_profit|floatformat:2 }} €
                                     </span>
@@ -121,7 +116,7 @@
                             {% endif %}
                         {% endwith %}
                     {% endif %}
-                    <li>
+                    <li class="{% cycle '' 'row-alt' %}">
                         <span class="{% if bet.result == 'y' %}yes-result{% elif bet.result == 'n' or bet.result == 'hl' %}no-result{% endif %}">
                             {{ bet.stake|floatformat:2 }} a {{ bet.odd|floatformat:3 }} - {{ bet.method }}
                         </span>
