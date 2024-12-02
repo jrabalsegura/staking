@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.utils import timezone
 # Create your models here.
 
 class Bet(models.Model):
@@ -36,6 +36,12 @@ class Bet(models.Model):
     ]
         
     method = models.CharField(max_length=2, choices=METHOD_CHOICES)
+    
+    def get_local_created_at(self):
+        return timezone.localtime(self.created_at)
+    
+    def get_local_updated_at(self):
+        return timezone.localtime(self.updated_at)
 
     def __str__(self):
         return f"{self.stake} a {self.odd} - {self.result}"

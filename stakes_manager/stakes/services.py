@@ -112,7 +112,7 @@ def process_bet(stake, odd, choice, method):
     current_time = timezone.localtime()
 
     balance = last_bet.balance
-    last_bet_date = last_bet.created_at
+    last_bet_date = last_bet.get_local_created_at()
     last_daily_profit = last_bet.daily_profit
     last_state = last_bet.nextState
     last_number_of_bets_day = last_bet.number_of_bets_day
@@ -173,8 +173,8 @@ def get_last_bet():
 
 
 def get_last_10_bets():
-    two_days_ago = datetime.now() - timedelta(days=10)
-    return Bet.objects.filter(created_at__gte=two_days_ago).order_by("-created_at")
+    ten_days_ago = datetime.now() - timedelta(days=10)
+    return Bet.objects.filter(created_at__gte=ten_days_ago).order_by("-created_at")
 
 
 def get_pending_bets():
