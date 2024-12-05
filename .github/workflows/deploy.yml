@@ -76,15 +76,8 @@ jobs:
 
           # Create necessary directories
           mkdir -p /home/ubuntu/sqlite_backup_stakes_manager
-          sudo rm -rf /home/ubuntu/staticfiles
-          sudo mkdir -p /home/ubuntu/staticfiles
-          sudo chown -R ubuntu:ubuntu /home/ubuntu
-          sudo chmod -R 755 /home/ubuntu/staticfiles
-
-          sudo chgrp www-data /home/ubuntu
-          sudo chgrp www-data /home/ubuntu/staticfiles
-
-          sudo chown -R www-data:www-data /home/ubuntu/staticfiles
+          mkdir -p /home/ubuntu/staticfiles
+          
 
           # Login to ECR
           echo 'Logging into ECR...'
@@ -131,7 +124,14 @@ jobs:
           # Migrate database if needed after restoring from backup
           docker exec stakes-app-container python stakes_manager/manage.py migrate --noinput
 
-          # Copy collectstatic to staticfiles
+          # Check current ownership and permissions of /home/ubuntu/staticfiles
+          if [ "$(stat -c '%U:%G' /home/ubuntu/staticfiles)" != "www-data:www-data" ]; then
+            echo "Setting up permissions for the first time..."
+            sudo chown -R www-data:www-data /home/ubuntu/staticfiles
+            sudo chmod -R 755 /home/ubuntu/staticfiles
+          fi
+
+          # Copy the new static files
           docker cp stakes-app-container:/app/stakes_manager/staticfiles /home/ubuntu
           
           # Clean up
