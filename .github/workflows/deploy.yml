@@ -127,12 +127,14 @@ jobs:
           docker cp stakes-app-container:/app/stakes_manager/staticfiles /home/ubuntu
 
           # Set permissions for static and media files
-          sudo chmod -R 755 /home/ubuntu/staticfiles || true
+          sudo chown ubuntu:ubuntu /home/ubuntu
+          sudo chown ubuntu:ubuntu /home/ubuntu/staticfiles
+          sudo chmod -R 755 /home/ubuntu/staticfiles
 
-          sudo chgrp www-data /home/ubuntu || true
-          sudo chgrp www-data /home/ubuntu/staticfiles || true
+          sudo chgrp www-data /home/ubuntu
+          sudo chgrp www-data /home/ubuntu/staticfiles
 
-          sudo chown -R www-data:www-data /home/ubuntu/staticfiles || true
+          sudo chown -R www-data:www-data /home/ubuntu/staticfiles
           
           # Clean up
           rm /tmp/.env
