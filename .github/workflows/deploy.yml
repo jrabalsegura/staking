@@ -76,9 +76,11 @@ jobs:
 
           # Create necessary directories
           mkdir -p /home/ubuntu/sqlite_backup_stakes_manager
-          mkdir -p /home/ubuntu/staticfiles
-          sudo chown -R www-data:www-data /home/ubuntu/staticfiles
-          sudo chmod -R 755 /home/ubuntu/staticfiles
+          if [ ! -d "/home/ubuntu/staticfiles" ]; then
+            mkdir -p /home/ubuntu/staticfiles
+            sudo chown -R www-data:www-data /home/ubuntu/staticfiles
+            sudo chmod -R 755 /home/ubuntu/staticfiles
+          fi
 
           # Login to ECR
           echo 'Logging into ECR...'
