@@ -77,6 +77,8 @@ jobs:
           # Create necessary directories
           mkdir -p /home/ubuntu/sqlite_backup_stakes_manager
           mkdir -p /home/ubuntu/staticfiles
+          sudo chown -R www-data:www-data /home/ubuntu/staticfiles
+          sudo chmod -R 755 /home/ubuntu/staticfiles
 
           # Login to ECR
           echo 'Logging into ECR...'
@@ -125,16 +127,6 @@ jobs:
 
           # Copy collectstatic to staticfiles
           docker cp stakes-app-container:/app/stakes_manager/staticfiles /home/ubuntu
-
-          # Set permissions for static and media files
-          sudo chown ubuntu:ubuntu /home/ubuntu
-          sudo chown ubuntu:ubuntu /home/ubuntu/staticfiles
-          sudo chmod -R 755 /home/ubuntu/staticfiles
-
-          sudo chgrp www-data /home/ubuntu
-          sudo chgrp www-data /home/ubuntu/staticfiles
-
-          sudo chown -R www-data:www-data /home/ubuntu/staticfiles
           
           # Clean up
           rm /tmp/.env
