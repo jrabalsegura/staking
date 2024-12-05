@@ -127,13 +127,13 @@ jobs:
           docker cp stakes-app-container:/app/stakes_manager/staticfiles /home/ubuntu
 
           # Set permissions for static and media files
-          sudo chown ubuntu:ubuntu /home/ubuntu/staticfiles
-          sudo chmod 755 /home/ubuntu/staticfiles
+          sudo chmod -R 755 /home/ubuntu/staticfiles
 
-          # Then change group ownership to www-data
-          sudo chgrp -R www-data /home/ubuntu/staticfiles
-          sudo chmod -R 755 /home/ubuntu/staticfiles/*
+          sudo chgrp www-data /home/ubuntu
+          sudo chgrp www-data /home/ubuntu/staticfiles
 
+          sudo chown -R www-data:www-data /home/ubuntu/staticfiles
+          
           # Clean up
           rm /tmp/.env
           if [ -f /home/ubuntu/sqlite_backup_stakes_manager/db.sqlite3.backup ]; then
