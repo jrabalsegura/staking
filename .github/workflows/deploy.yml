@@ -79,7 +79,7 @@ jobs:
           mkdir -p /home/ubuntu/staticfiles
           sudo chown -R ubuntu:www-data /home/ubuntu
           sudo chmod 775 /home/ubuntu/staticfiles
-          
+          sudo chown -R www-data:www-data /home/ubuntu/staticfiles
 
           # Login to ECR
           echo 'Logging into ECR...'
