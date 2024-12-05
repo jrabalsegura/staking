@@ -46,8 +46,6 @@ def stake_view(request):
 
     # Get daily profit and check if it's same day that last_bet was created
     if check_if_same_day(last_bet.get_local_created_at(), timezone.localtime()):
-        print(last_bet.get_local_created_at())
-        print(timezone.localtime())
         daily_profit = last_bet.daily_profit
         number_of_bets_day = last_bet.number_of_bets_day
     else:

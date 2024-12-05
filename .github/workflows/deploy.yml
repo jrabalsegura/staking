@@ -37,41 +37,58 @@ jobs:
 
     - name: Deploy to EC2
       env:
-        PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-        HOST: ec2-3-250-85-254.eu-west-1.compute.amazonaws.com
+        PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        HOST: 167.235.145.103
         USER: ubuntu
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: stakes-app
         IMAGE_TAG: ${{ github.sha }}
         DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
         IS_DEVELOPMENT: ${{ secrets.IS_DEVELOPMENT }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       run: |
         echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-        ssh -o StrictHostKeyChecking=no -i private_key ${USER}@${HOST} << EOF
-          # Install AWS CLI if not already installed
+        ssh -o StrictHostKeyChecking=no -i private_key ${USER}@${HOST} "
+          set -e
+          echo 'Starting deployment process...'
+          
+          # Install required packages
+          sudo apt-get update
+          
+          # Install AWS CLI
           if ! command -v aws &> /dev/null; then
-            sudo apt-get update && sudo apt-get install -y awscli
+            echo 'Installing AWS CLI...'
+            cd /tmp
+            curl \"https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip\" -o \"awscliv2.zip\"
+            unzip awscliv2.zip
+            sudo ./aws/install
+            rm -rf aws awscliv2.zip
           fi
           
-          # Configure AWS CLI
-          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws configure set default.region eu-west-1
+          # Create .aws directory and configure credentials
+          echo 'Configuring AWS credentials...'
+          mkdir -p ~/.aws
+          echo '[default]' > ~/.aws/credentials
+          echo 'aws_access_key_id=${AWS_ACCESS_KEY_ID}' >> ~/.aws/credentials
+          echo 'aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}' >> ~/.aws/credentials
+          echo 'region=eu-west-1' >> ~/.aws/credentials         
+
+          # Create necessary directories
+          mkdir -p /home/ubuntu/sqlite_backup_stakes_manager
+          mkdir -p /home/ubuntu/staticfiles
 
           # Login to ECR
-          aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin ${ECR_REGISTRY}         
-
-          # Create a backup directory if it doesn't exist
-          mkdir -p /home/ubuntu/sqlite_backup_stakes_manager
-
-          # Create a staticfiles directory if it doesn't exist
-          mkdir -p /home/ubuntu/staticfiles
+          echo 'Logging into ECR...'
+          aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin ${ECR_REGISTRY}
 
           docker cp stakes-app-container:/app/stakes_manager/db.sqlite3 /home/ubuntu/sqlite_backup_stakes_manager/db.sqlite3.backup || true
 
           # Stop and remove existing container
-          docker stop stakes-app-container || true
-          docker rm stakes-app-container || true
+          if docker ps -a | grep -q stakes-app-container; then
+            docker stop stakes-app-container || true
+            docker rm stakes-app-container || true
+          fi
 
           # Prune Docker resources
           docker system prune -af --volumes
@@ -80,6 +97,11 @@ jobs:
           docker pull ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}
 
           # Create a temporary .env file with the secret
+          echo "DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}" > /tmp/.env
+          echo "IS_DEVELOPMENT=${IS_DEVELOPMENT}" >> /tmp/.env
+
+          # Create env file
+          touch /tmp/.env
           echo "DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}" > /tmp/.env
           echo "IS_DEVELOPMENT=${IS_DEVELOPMENT}" >> /tmp/.env
 
@@ -102,6 +124,16 @@ jobs:
 
           # Copy collectstatic to staticfiles
           docker cp stakes-app-container:/app/stakes_manager/staticfiles /home/ubuntu
+
+          # Set permissions for static and media files
+          sudo chgrp www-data /home/ubuntu
+          sudo chgrp www-data /home/ubuntu/staticfiles
+
+          sudo chmod 750 /home/ubuntu
+          sudo chmod 750 /home/ubuntu/staticfiles
+
+          sudo chown -R www-data:www-data /home/ubuntu/staticfiles
+          sudo chmod -R 755 /home/ubuntu/staticfiles
 
           # Clean up
           rm /tmp/.env
