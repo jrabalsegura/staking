@@ -35,7 +35,7 @@ jobs:
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
-    - name: Deploy to EC2
+    - name: Deploy to Hetzner
       env:
         PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         HOST: 167.235.145.103
@@ -127,14 +127,12 @@ jobs:
           docker cp stakes-app-container:/app/stakes_manager/staticfiles /home/ubuntu
 
           # Set permissions for static and media files
-          sudo chgrp www-data /home/ubuntu
-          sudo chgrp www-data /home/ubuntu/staticfiles
+          sudo chown ubuntu:ubuntu /home/ubuntu/staticfiles
+          sudo chmod 755 /home/ubuntu/staticfiles
 
-          sudo chmod 750 /home/ubuntu
-          sudo chmod 750 /home/ubuntu/staticfiles
-
-          sudo chown -R www-data:www-data /home/ubuntu/staticfiles
-          sudo chmod -R 755 /home/ubuntu/staticfiles
+          # Then change group ownership to www-data
+          sudo chgrp -R www-data /home/ubuntu/staticfiles
+          sudo chmod -R 755 /home/ubuntu/staticfiles/*
 
           # Clean up
           rm /tmp/.env
