@@ -77,7 +77,7 @@ jobs:
           # Create necessary directories
           mkdir -p /home/ubuntu/sqlite_backup_stakes_manager
           mkdir -p /home/ubuntu/staticfiles
-          sudo chown ubuntu:www-data /home/ubuntu/staticfiles
+          sudo chown ubuntu:www-data /home/ubuntu
           sudo chmod 775 /home/ubuntu/staticfiles
           
 
