@@ -155,8 +155,8 @@
     <!-- Include Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        const balanceLabels = {{ balance_labels|safe }};
-        const balanceData = {{ balance_data|safe }};
+        const balanceLabels = {{ balance_labels|safe }}.reverse();
+        const balanceData = {{ balance_data|safe }}.reverse();
         const minY = {{ min_balance }};
         const maxY = {{ max_balance }};
     
