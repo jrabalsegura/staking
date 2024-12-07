@@ -51,7 +51,6 @@ def stake_view(request):
 
     # Sort the bets in chronological order (oldest first) if needed:
     # Assuming `get_last_10_bets()` returns the most recent first, reverse it
-    last_bets = list(last_bets)[::-1]  # This ensures the first in the list is the oldest bet
 
     # Prepare balance data for the chart
     balance_labels = [bet.get_local_created_at().strftime("%m-%d") for bet in last_bets]
