@@ -17,13 +17,13 @@
                     {{ daily_profit|floatformat:2 }} €
                 </span>
                 <span> &nbsp;&nbsp;&nbsp;&nbsp; </span>
-                <span class="number-of-bets">(
+                <span class="number-of-bets">
+                    (
                     {{ number_of_bets_day }} {% if number_of_bets_day == 1 %}bet{% else %}bets{% endif %}
-                )</span>
+                    )
+                </span>
             </p>
-            <p>
-                State: {{ nextState }}
-            </p>
+            <p>State: {{ nextState }}</p>
         </div>
     </header>
 
@@ -55,6 +55,12 @@
             <button type="submit">Submit</button>
         </form>
 
+        <!-- Add a section for the balance chart -->
+        <section class="chart-section" style="height: 300px;">
+            <h2>Balance Evolution (Last 10 Bets):</h2>
+            <canvas id="balanceChart"></canvas>
+        </section>
+
         <section class="pending-bets">
             <h2>Pending bets:</h2>
             {% if pending_bets %}
@@ -75,7 +81,7 @@
                     {% endfor %}
                 </ul>
             {% else %}
-            <p>No pending bets</p>
+                <p>No pending bets</p>
             {% endif %}
         </section>
 
@@ -104,7 +110,7 @@
                         {% with previous_bet=last_bets|slice:forloop.counter0|last %}
                             {% if bet.get_local_created_at|date:"Y-m-d" != previous_bet.get_local_created_at|date:"Y-m-d" %}
                                 <li class="day-separator"></li>
-                                <li style="display: flex; justify-content: center; align-items: center; gap: 8px;"">
+                                <li style="display: flex; justify-content: center; align-items: center; gap: 8px;">
                                     <span class="{% if bet.daily_profit > 0 %}yes-result{% elif bet.daily_profit < 0 %}no-result{% endif %}">
                                         {{ bet.get_local_created_at|date:"l" }} result: {{ bet.daily_profit|floatformat:2 }} €
                                     </span>
@@ -145,5 +151,52 @@
             </ul>
         </section>
     </main>
+
+    <!-- Include Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const balanceLabels = {{ balance_labels|safe }};
+        const balanceData = {{ balance_data|safe }};
+        const minY = {{ min_balance }};
+        const maxY = {{ max_balance }};
+    
+        const balanceConfig = {
+            type: 'line',
+            data: {
+                labels: balanceLabels,
+                datasets: [{
+                    label: 'Balance (€)',
+                    data: balanceData,
+                    borderColor: 'rgb(54, 162, 235)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Balance Evolution Over the Last 10 Bets'
+                    }
+                },
+                scales: {
+                    y: {
+                        min: minY - 1,
+                        max: maxY + 1,
+                        // If you want a small padding so the line isn't touching the top/bottom
+                        // you can also use suggestedMin/Max or just adjust min/max slightly.
+                        // suggestedMin: minY - 1,
+                        // suggestedMax: maxY + 1,
+                    }
+                }
+            }
+        };
+    
+        var balanceChart = new Chart(
+            document.getElementById('balanceChart'),
+            balanceConfig
+        );
+    </script>
 </body>
 </html>

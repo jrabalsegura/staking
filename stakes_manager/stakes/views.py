@@ -1,3 +1,5 @@
+import json
+from collections import OrderedDict
 from datetime import datetime
 
 from django.shortcuts import get_object_or_404, redirect, render
@@ -31,32 +33,32 @@ def stake_view(request):
         if choice in ["y", "n", "hl"]:
             process_bet(stake, odd, choice, method)
         else:
-            # Create a new BetPending
             create_bet_pending(stake, odd, method)
+        return redirect("stakes:stake")
 
-        return redirect(
-            "stakes:stake"
-        )  # Redirect back to the same page after processing
-
-    # Seguro que esto se podría refactorizar más para quitar toda la lógica de negocio de la vista
-    # pero bueno, funciona.
-    # Get the last bet for stake and multiplier
     last_bet = get_last_bet()
     current_stake = last_bet.next_stake if last_bet else 0
 
-    # Get daily profit and check if it's same day that last_bet was created
-    if check_if_same_day(last_bet.get_local_created_at(), timezone.localtime()):
+    if last_bet and check_if_same_day(last_bet.get_local_created_at(), timezone.localtime()):
         daily_profit = last_bet.daily_profit
         number_of_bets_day = last_bet.number_of_bets_day
     else:
         daily_profit = 0
         number_of_bets_day = 0
 
-    # Get pending bets
     pending_bets = get_pending_bets()
-
-    # Get last 10 days of bets in reverse order
     last_bets = get_last_10_bets()
+
+    # Sort the bets in chronological order (oldest first) if needed:
+    # Assuming `get_last_10_bets()` returns the most recent first, reverse it
+    last_bets = list(last_bets)[::-1]  # This ensures the first in the list is the oldest bet
+
+    # Prepare balance data for the chart
+    balance_labels = [bet.get_local_created_at().strftime("%m-%d") for bet in last_bets]
+    balance_data = [bet.balance for bet in last_bets]
+    
+    min_balance = min(balance_data) if balance_data else 0
+    max_balance = max(balance_data) if balance_data else 0
 
     context = {
         "current_stake": current_stake,
@@ -66,6 +68,10 @@ def stake_view(request):
         "number_of_bets_day": number_of_bets_day,
         "nextState": last_bet.nextState if last_bet else "",
         "current_date": timezone.localtime().date(),
+        "balance_labels": json.dumps(balance_labels),
+        "balance_data": json.dumps(balance_data),
+        "min_balance": min_balance,
+        "max_balance": max_balance,
     }
 
     return render(request, "stakes/stake.html", context)
