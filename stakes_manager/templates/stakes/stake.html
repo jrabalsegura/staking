@@ -55,9 +55,9 @@
             <button type="submit">Submit</button>
         </form>
 
-        <!-- Add a section for the balance chart -->
-        <section class="chart-section" style="height: 300px;">
-            <canvas id="balanceChart"></canvas>
+        <!-- Changed: Removed inline height from section and added explicit sizing to the canvas -->
+        <section class="chart-section" style="width: 600px; height: 250px;">
+            <canvas id="balanceChart" style="width: 100%; height: 100%;"></canvas>
         </section>
 
         <section class="pending-bets">
@@ -158,7 +158,7 @@
         const balanceData = {{ balance_data|safe }}.reverse();
         const minY = {{ min_balance }};
         const maxY = {{ max_balance }};
-    
+
         const balanceConfig = {
             type: 'line',
             data: {
@@ -172,7 +172,9 @@
                 }]
             },
             options: {
+                // Changed: maintainAspectRatio to false to let the chart fill the container
                 responsive: true,
+                maintainAspectRatio: false,
                 plugins: {
                     title: {
                         display: true,
@@ -183,15 +185,11 @@
                     y: {
                         min: minY - 1,
                         max: maxY + 1,
-                        // If you want a small padding so the line isn't touching the top/bottom
-                        // you can also use suggestedMin/Max or just adjust min/max slightly.
-                        // suggestedMin: minY - 1,
-                        // suggestedMax: maxY + 1,
                     }
                 }
             }
         };
-    
+
         var balanceChart = new Chart(
             document.getElementById('balanceChart'),
             balanceConfig
