@@ -53,7 +53,7 @@ def stake_view(request):
     # Assuming `get_last_10_bets()` returns the most recent first, reverse it
 
     # Prepare balance data for the chart
-    balance_labels = [bet.get_local_created_at().strftime("%m-%d") for bet in last_bets]
+    balance_labels = [bet.get_local_created_at().strftime("%d-%m") for bet in last_bets]
     balance_data = [bet.balance for bet in last_bets]
     
     min_balance = min(balance_data) if balance_data else 0
